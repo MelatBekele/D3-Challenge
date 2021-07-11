@@ -35,7 +35,7 @@ d3.csv("assets/data/data.csv").then(function(Healthdata){
 
     });
 
-    // Step 2: Create scale functions
+    // Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
       .domain([2, d3.max(Healthdata, d => d.healthcare)])
@@ -46,13 +46,13 @@ d3.csv("assets/data/data.csv").then(function(Healthdata){
       .range([height, 0]);
 
 
-    // Step 3: Create axis functions
+    //  Create axis functions
     // ==============================
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
 
-    // Step 4: Append Axes to the chart
+    // Append Axes to the chart
     // ==============================
     chartGroup.append("g")
       .attr("transform", `translate(0, ${height})`)
@@ -63,7 +63,7 @@ d3.csv("assets/data/data.csv").then(function(Healthdata){
     
 
 
-    // Step 5: Create Circles
+    // Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
     .data(Healthdata)
@@ -74,8 +74,18 @@ d3.csv("assets/data/data.csv").then(function(Healthdata){
     .attr("r", "15")
     .attr("fill", "black")
     .attr("opacity", ".4");
+  
+     //adding state attribute 
+    //=======================
+    svg.selectAll('text')
+    .data(Healthdata)
+    .enter()
+    .append('text')
+    .attr('x', d => xLinearScale(d.healthcare)+87)
+    .attr('y', d => yLinearScale(d.poverty)+25)
+    .text(d=>d.abbr);
       
-    // Step 6: Initialize tool tip
+    // Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
       .attr("class", "tooltip")
@@ -84,13 +94,13 @@ d3.csv("assets/data/data.csv").then(function(Healthdata){
         return (`${d.state}<br>Health Care: ${d.healthcare}<br>Poverty: ${d.poverty}`);
       });
 
-    // Step 7: Create tooltip in the chart
+    // Create tooltip in the chart
     // ==============================
     chartGroup.call(toolTip);
 
 
 
-    // Step 8: Create event listeners to display and hide the tooltip
+    // Create event listeners to display and hide the tooltip
     // ==============================
     circlesGroup.on("mouseover", function(data) {
       toolTip.show(data, this);
